@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { ImageGalleryStyled } from './ImageGallery.styled';
-import { Loader } from 'components/Loader/Loader';
 import { fetchData } from 'API/api';
 
 const STATUS = {
@@ -39,7 +38,7 @@ export class ImageGallery extends Component {
     console.log(data);
 
     if (status === STATUS.PENDING) {
-      return <Loader />;
+      return <p>loading</p>;
     }
 
     if (status === STATUS.RESOLVE) {
