@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { smoothScrool } from 'utils/smoothScroll';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import { ImageGalleryStyled } from './ImageGallery.styled';
 import { LoaderStyled } from 'components/Loader/Loader.styled';
 import { fetchData } from 'API/api';
 import { Button } from 'components/Button/Button';
+import { Modal } from 'components/Modal/Modal';
 
 export class ImageGallery extends Component {
   state = {
@@ -12,28 +16,36 @@ export class ImageGallery extends Component {
       page: 1,
       total: null,
     },
+    modal: {
+      isShowModal: false,
+      dataModal: null,
+    },
 
-    isError: false,
     loading: false,
   };
 
-  async componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps, prevState) {
     const prevQuery = prevProps.query.toLowerCase();
     const currentQuery = this.props.query.toLowerCase();
 
-    if (prevQuery === currentQuery) {
-      return;
+    if (prevQuery !== currentQuery) {
+      await this.setState({
+        data: {
+          hits: [],
+          page: 1,
+          total: null,
+        },
+      });
+
+      this.loadData();
     }
 
-    await this.setState({
-      data: {
-        hits: [],
-        page: 1,
-        total: null,
-      },
-    });
-
-    this.loadData(currentQuery);
+    if (
+      this.state.data.page !== prevState.data.page &&
+      this.state.data.page !== 2
+    ) {
+      smoothScrool();
+    }
   }
 
   loadData = async () => {
@@ -48,7 +60,7 @@ export class ImageGallery extends Component {
       const response = await fetchData(currentQuery, page);
       const { hits, totalHits } = response;
 
-      this.setState(prevState => {
+      await this.setState(prevState => {
         return {
           data: {
             hits: [...prevState.data.hits, ...hits],
@@ -59,17 +71,26 @@ export class ImageGallery extends Component {
         };
       });
     } catch (error) {
-      console.log(error);
+      this.setState({ loading: false });
+      toast.error('Error downloads');
     }
+  };
+
+  openModal = evt => {
+    const { img } = evt.currentTarget.dataset;
+    this.setState({ modal: { dataModal: img, isShowModal: true } });
+  };
+
+  closeModal = () => {
+    this.setState({ modal: { isShowModal: false } });
   };
 
   render() {
     const {
       data: { hits, total },
+      modal: { dataModal, isShowModal },
       loading,
     } = this.state;
-
-    console.log(this.state.data);
 
     return (
       <>
@@ -80,6 +101,8 @@ export class ImageGallery extends Component {
                 key={id}
                 webformatURL={webformatURL}
                 largeImageURL={largeImageURL}
+                tags={tags}
+                showImg={this.openModal}
               />
             ))}
           </ImageGalleryStyled>
@@ -88,6 +111,17 @@ export class ImageGallery extends Component {
         {hits.length > 0 && hits.length < total && (
           <Button click={this.loadData} />
         )}
+
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          closeOnClick
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+        {isShowModal && <Modal data={dataModal} closeModal={this.closeModal} />}
       </>
     );
   }

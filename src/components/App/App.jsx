@@ -15,7 +15,7 @@ export class App extends Component {
   render() {
     return (
       <AppStyled>
-        <Searchbar submitQuery={this.submitQuery} />{' '}
+        <Searchbar submitQuery={this.submitQuery} />
         <ImageGallery query={this.state.query} />
       </AppStyled>
     );

@@ -1,27 +1,31 @@
 import React, { Component } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
 import { Header } from './Searchbar.styled';
 import { FaSearch } from 'react-icons/fa';
 
 export class Searchbar extends Component {
   state = {
     query: '',
+    prevQuery: '',
   };
 
   handleInput = evt => {
     const { value } = evt.currentTarget;
-    this.setState({ query: value });
+    this.setState({ query: value, isSend: false });
   };
 
   submitForm = evt => {
     evt.preventDefault();
     const { submitQuery } = this.props;
-    const { query } = this.state;
+    const { query, prevQuery } = this.state;
+
+    if (prevQuery === query) {
+      toast.info('This query already has sent');
+      return;
+    }
 
     submitQuery(query);
-  };
-
-  resetForm = () => {
-    this.setState({ query: '' });
+    this.setState({ prevQuery: query });
   };
 
   render() {
@@ -40,6 +44,7 @@ export class Searchbar extends Component {
             onChange={this.handleInput}
           />
         </form>
+        <ToastContainer />
       </Header>
     );
   }

@@ -1,9 +1,14 @@
 import { ImageItem } from './ImageGalleryItem.styled';
 
-export const ImageGalleryItem = ({ webformatURL, largeImageURL, tags }) => {
+export const ImageGalleryItem = ({
+  showImg,
+  webformatURL,
+  largeImageURL,
+  tags,
+}) => {
   return (
-    <ImageItem>
-      <img src={webformatURL} alt="tags" />
+    <ImageItem data-img={largeImageURL} onClick={showImg}>
+      <img src={webformatURL} alt={tags} />
     </ImageItem>
   );
 };
