@@ -98,8 +98,6 @@ export class ImageGallery extends Component {
       loading,
     } = this.state;
 
-    console.log(this.state.data);
-
     return (
       <>
         {hits.length > 0 && (
