@@ -42,7 +42,7 @@ export class ImageGallery extends Component {
 
     if (
       this.state.data.page !== prevState.data.page &&
-      this.state.data.page !== 2
+      this.state.data.page > 2
     ) {
       smoothScrool();
     }
@@ -59,6 +59,12 @@ export class ImageGallery extends Component {
 
       const response = await fetchData(currentQuery, page);
       const { hits, totalHits } = response;
+
+      if (!totalHits) {
+        this.setState({ loading: false });
+        toast.info('No results found');
+        return;
+      }
 
       await this.setState(prevState => {
         return {
@@ -91,6 +97,8 @@ export class ImageGallery extends Component {
       modal: { dataModal, isShowModal },
       loading,
     } = this.state;
+
+    console.log(this.state.data);
 
     return (
       <>
