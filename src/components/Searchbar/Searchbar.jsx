@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { Header } from './Searchbar.styled';
 import { FaSearch } from 'react-icons/fa';
 
@@ -19,11 +19,15 @@ export class Searchbar extends Component {
     const { submitQuery } = this.props;
     const { query, prevQuery } = this.state;
 
+    if (!query) {
+      toast.info('Please text your query');
+      return;
+    }
+
     if (prevQuery === query) {
       toast.info('This query already has sent');
       return;
     }
-
     submitQuery(query);
     this.setState({ prevQuery: query });
   };
@@ -44,7 +48,6 @@ export class Searchbar extends Component {
             onChange={this.handleInput}
           />
         </form>
-        <ToastContainer />
       </Header>
     );
   }

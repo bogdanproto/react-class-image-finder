@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { smoothScrool } from 'utils/smoothScroll';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
@@ -112,15 +112,6 @@ export class ImageGallery extends Component {
           <Button click={this.loadData} />
         )}
 
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          closeOnClick
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
         {isShowModal && <Modal data={dataModal} closeModal={this.closeModal} />}
       </>
     );
